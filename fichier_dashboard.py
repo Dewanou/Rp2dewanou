@@ -7,7 +7,7 @@ import joblib
 import numpy as np
 
 app = dash.Dash(__name__,external_stylesheets=[dbc.themes.SKETCHY])
-server = app.server
+
 
 # Charger le modèle préalablement exporté
 best_model = joblib.load('model.pkl')
