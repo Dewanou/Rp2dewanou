@@ -43,8 +43,7 @@ app.layout = html.Div([
                 # Use row and col to control vertical alignment of logo / brand
                 dbc.Row(
                     [
-                        dbc.Col(dbc.NavbarBrand("Prêt à dépenser", className="ms-2")),
-                        dbc.Col(html.Img(src="C:\\Users\\ec\\Desktop\\OC Alternance\\Implémentez un modèle de scoring\\logo_ese.JPG"))
+                        dbc.Col(dbc.NavbarBrand("Prêt à dépenser", className="ms-2"))
                     ],
                     align="center",
                     className="g-0",
