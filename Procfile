@@ -1,1 +1,1 @@
-web: python fichier_dashboard.py
+web: gunicorn fichier_dashboard:server
