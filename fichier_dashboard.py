@@ -1,4 +1,5 @@
 import dash
+import requests
 import dash_bootstrap_components as dbc
 from dash import dcc, html
 from dash.dependencies import Input, Output
@@ -68,31 +69,30 @@ app.layout = html.Div([
 ])
 
 
+
 @app.callback(
     [Output('prediction-output', 'children'),
      Output('table-container', 'children')],
     Input('predict-button', 'n_clicks'),
     Input('sk-id-dropdown', 'value')
 )
-    
-
 def update_prediction_and_table(n_clicks, sk_id_curr):
     if n_clicks is None or sk_id_curr is None:
         return '', ''
 
     # Faites une requête GET à votre API FastAPI en utilisant l'URL appropriée
-    api_url = f"https://lgbpdcapi-ce5a61ec45e8.herokuapp.com/predict/{sk_id_curr}" # Remplacez par l'URL de votre API
+    api_url = f"https://lgbpdcapi-ce5a61ec45e8.herokuapp.com/predict/{sk_id_curr}"
     response = requests.get(api_url)
 
     if response.status_code == 200:
         data = response.json()
         prediction = data.get("prediction", "N/A")
-        probabilities = data.get("probabilities", "N/A")
+        probabilities = data.get("probabilities", [0, 0])  # Mettez une valeur par défaut pour les probabilités
     else:
         prediction = "Erreur"
-        probabilities = []
+        probabilities = [0, 0]  # Mettez une valeur par défaut pour les probabilités
 
-# Créez le tableau de prédiction
+    # Créez le tableau de prédiction
     prediction_table = html.Div([
         html.H2('Résultat de la prédiction'),
         html.P(f'La prédiction est : {prediction}'),
@@ -108,20 +108,18 @@ def update_prediction_and_table(n_clicks, sk_id_curr):
         'justifyContent': 'center'
     })
 
-    
-    # Créer une liste de noms de colonnes
+    # Créez une liste de noms de colonnes
     names_colonnes = data_affich.columns.tolist()
 
-    # Créer une liste de données
+    # Créez une liste de données
     datas = data_affich.loc[int(sk_id_curr)].tolist()
 
-        # Créer une table pour les données avec une mise en forme personnalisée
+    # Créez un tableau pour les données avec une mise en forme personnalisée
     data_affich_table = html.Div([
         html.H2('Données Individus', className='text-center'),
         dbc.Table(
             [
-                html.Tr([html.Th('Nom de la Colonne'), html.Th('Valeur')], className="table-info text-center"),  # En-tête avec le thème bleu ciel
-                # Boucle pour afficher les noms de colonnes et les valeurs
+                html.Tr([html.Th('Nom de la Colonne'), html.Th('Valeur')], className="table-info text-center"),
                 *[
                     html.Tr([html.Td(nom, className="text-center"), html.Td(donnee, className="text-center")], className="table-light")
                     for nom, donnee in zip(names_colonnes, datas)
@@ -129,27 +127,20 @@ def update_prediction_and_table(n_clicks, sk_id_curr):
             ],
             striped=True, bordered=True, hover=True,
         ),
-    ],className="table-responsive m-2 col-6") 
+    ], className="table-responsive m-2 col-6")
 
-    # Ajout d'une classe pour gérer la réactivité de la table si elle est trop grande
-
-
-
-
-
-    # Créer une liste de noms de colonnes
+    # Créez une liste de noms de colonnes
     noms_colonnes = data_disply.columns.tolist()
 
-    # Créer une liste de données
+    # Créez une liste de données
     donnees = data_disply.loc[int(sk_id_curr)].tolist()
 
-        # Créer une table pour les données avec une mise en forme personnalisée
+    # Créez un tableau pour les données avec une mise en forme personnalisée
     data_disply_table = html.Div([
         html.H2('Données Cluster', className='text-center'),
         dbc.Table(
             [
-                html.Tr([html.Th('Nom de la Colonne'), html.Th('Valeur')], className="table-info text-center"),  # En-tête avec le thème bleu ciel
-                # Boucle pour afficher les noms de colonnes et les valeurs
+                html.Tr([html.Th('Nom de la Colonne'), html.Th('Valeur')], className="table-info text-center"),
                 *[
                     html.Tr([html.Td(nom, className="text-center"), html.Td(donnee, className="text-center")], className="table-light")
                     for nom, donnee in zip(noms_colonnes, donnees)
@@ -157,13 +148,14 @@ def update_prediction_and_table(n_clicks, sk_id_curr):
             ],
             striped=True, bordered=True, hover=True,
         ),
-    ], className="table-responsive m-2 col-6")  # Ajout d'une classe pour gérer la réactivité de la table si elle est trop grande
-
+    ], className="table-responsive m-2 col-6")
 
     # Conteneur pour les deux tables sur la même ligne
     tables_container = html.Div([data_affich_table, data_disply_table], className="d-flex")
 
     return prediction_table, tables_container
+
+# ...
 
 if __name__ == '__main__':
     app.run_server(debug=True)
