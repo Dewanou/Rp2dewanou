@@ -5,19 +5,15 @@ from dash.dependencies import Input, Output
 import pandas as pd
 import joblib
 import numpy as np
-from functions import *
 
 app = dash.Dash(__name__,external_stylesheets=[dbc.themes.SKETCHY])
 
 server= app.server
 
 
-# Charger le modèle préalablement exporté
-#best_model = joblib.load('model.pkl')
 
 
-
-#data_for_predictions = pd.read_csv('data_for_predictions.csv').set_index('SK_ID_CURR')
+data_for_predictions = pd.read_csv('data_for_predictions.csv').set_index('SK_ID_CURR')
 
 
 # Charger les données de data_affich et data_disply
@@ -26,16 +22,7 @@ server= app.server
 data_affich = pd.read_csv('df_affich.csv').set_index('SK_ID_CURR')
 data_disply = pd.read_csv('data_disply.csv').set_index('SK_ID_CURR')
 
-# Fonction pour effectuer la prédiction
-#def predict(sk_id_curr):
-    # Récupérer les données correspondant à SK_ID_CURR depuis la base de données
-   # data = data_for_predictions.loc[int(sk_id_curr)]
 
-    # Effectuer la prédiction
-   # prediction = best_model.predict(data.values.reshape(1, -1))
-   # probabilities = best_model.predict_proba(data.values.reshape(1, -1))  # Pour obtenir les probabilités des classes
-
-    # return prediction[0], probabilities[0]
 
 app.layout = html.Div([
         dbc.Navbar(
@@ -79,26 +66,33 @@ app.layout = html.Div([
     html.Div(id='table-container', className="table-responsive")
     ], className="row", style={'margin-left': '5%', 'margin-right': '5%'})
 ])
-#        html.Div([
-#        html.Div(id='prediction-output', className="col-3 p-0"),  # Utilisation de la classe "col-6" pour occuper 50% de la largeur
-#        html.Div(id='table-container', className="col-6 p-0"),  # Utilisation de la classe "col-6" pour occuper 50% de la largeur
-#    ], className="row", style={'margin-left': '0%', 'margin-right': '0%'}),  # Ajout de classes pour créer une grille
-#]) 
 
-    
+
 @app.callback(
     [Output('prediction-output', 'children'),
      Output('table-container', 'children')],
     Input('predict-button', 'n_clicks'),
     Input('sk-id-dropdown', 'value')
 )
+    
+
 def update_prediction_and_table(n_clicks, sk_id_curr):
     if n_clicks is None or sk_id_curr is None:
         return '', ''
 
-    prediction, probabilities = predict(sk_id_curr)
+    # Faites une requête GET à votre API FastAPI en utilisant l'URL appropriée
+    api_url = f"https://lgbpdcapi-ce5a61ec45e8.herokuapp.com/predict/{sk_id_curr}" # Remplacez par l'URL de votre API
+    response = requests.get(api_url)
 
-    # Créer le tableau de prédiction
+    if response.status_code == 200:
+        data = response.json()
+        prediction = data.get("prediction", "N/A")
+        probabilities = data.get("probabilities", "N/A")
+    else:
+        prediction = "Erreur"
+        probabilities = []
+
+# Créez le tableau de prédiction
     prediction_table = html.Div([
         html.H2('Résultat de la prédiction'),
         html.P(f'La prédiction est : {prediction}'),
@@ -108,14 +102,13 @@ def update_prediction_and_table(n_clicks, sk_id_curr):
             html.Li(f'Classe 1 : {probabilities[1]}')
         ])
     ], style={
-    'display': 'flex',        
-    'flexDirection': 'column',  
-    'alignItems': 'center',       
-    'justifyContent': 'center'      
-})
+        'display': 'flex',
+        'flexDirection': 'column',
+        'alignItems': 'center',
+        'justifyContent': 'center'
+    })
 
-
-
+    
     # Créer une liste de noms de colonnes
     names_colonnes = data_affich.columns.tolist()
 
@@ -170,13 +163,7 @@ def update_prediction_and_table(n_clicks, sk_id_curr):
     # Conteneur pour les deux tables sur la même ligne
     tables_container = html.Div([data_affich_table, data_disply_table], className="d-flex")
 
-
-  
-
-  
-
     return prediction_table, tables_container
-    #[data_affich_table, html.Br(), data_disply_table]
 
 if __name__ == '__main__':
     app.run_server(debug=True)
