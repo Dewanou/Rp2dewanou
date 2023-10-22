@@ -116,7 +116,7 @@ def update_prediction_and_table(n_clicks, sk_id_curr):
 
     # Créez un tableau pour les données avec une mise en forme personnalisée
     data_affich_table = html.Div([
-        html.H2('Données Individus', className='text-center'),
+        html.H2('Données Cluster', className='text-center'),
         dbc.Table(
             [
                 html.Tr([html.Th('Nom de la Colonne'), html.Th('Valeur')], className="table-info text-center"),
@@ -137,7 +137,7 @@ def update_prediction_and_table(n_clicks, sk_id_curr):
 
     # Créez un tableau pour les données avec une mise en forme personnalisée
     data_disply_table = html.Div([
-        html.H2('Données Cluster', className='text-center'),
+        html.H2('Données Individus', className='text-center'),
         dbc.Table(
             [
                 html.Tr([html.Th('Nom de la Colonne'), html.Th('Valeur')], className="table-info text-center"),
