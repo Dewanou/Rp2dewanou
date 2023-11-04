@@ -19,7 +19,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.10  # Vous pouvez également utiliser Python 3.6 si nécessaire
+        python-version: 3.7  # Vous pouvez également utiliser Python 3.6 si nécessaire
 
     - name: Update pip
       run: |
