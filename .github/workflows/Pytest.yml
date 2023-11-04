@@ -1,26 +1,42 @@
-name: Run Tests
+name: Pytest
 
 on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-  tests:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Check Out Repository
+    - name: Check out the code
       uses: actions/checkout@v2
 
-    - name: Set Up Python
+    - name: Set up Python
       uses: actions/setup-python@v2
       with:
         python-version: 3.8
 
-    - name: Install Dependencies and Run Tests
+    - name: Install system dependencies
       run: |
+        sudo apt-get update
+        sudo apt-get install -y unzip xvfb libxi6 libgconf-2-4
+
+    - name: Set up Python virtual environment
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+
+    - name: Install dependencies
+      run: |
+        pip install --upgrade pip
         pip install -r requirements.txt
-        pip install pytest
-        pytest tests/
-      working-directory: .
+
+    - name: Run Pytest
+      run: |
+        pytest
+
