@@ -1,5 +1,3 @@
-# test_page_1.py
-
 import dash.testing.wait as wait
 import dash.testing.browser
 
@@ -8,7 +6,7 @@ def test_page_1():
     browser = dash.testing.browser.Dash(__name__)
     browser.server.app.config.suppress_callback_exceptions = True
 
-    # Chargez la page de la page 1 (assurez-vous que l'URL est correcte)
+    # Chargez la page de la page 1 en utilisant l'URL correcte
     browser.visit('https://dewanoupredict-9816cc161f92.herokuapp.com/')
 
     # Attendez que la page soit complètement chargée (vous pouvez ajuster le délai si nécessaire)
