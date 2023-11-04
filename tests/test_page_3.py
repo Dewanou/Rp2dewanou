@@ -1,5 +1,3 @@
-# test_page_3.py
-
 import dash.testing.wait as wait
 import dash.testing.browser
 
@@ -8,8 +6,11 @@ def test_page_3():
     browser = dash.testing.browser.Dash(__name__)
     browser.server.app.config.suppress_callback_exceptions = True
 
-    # Chargez la page de la page 3 (assurez-vous que l'URL est correcte)
-    browser.visit('/page-3')
+    # Chargez la page principale de votre application Dash
+    browser.visit('https://dewanoupredict-9816cc161f92.herokuapp.com/')
+
+    # Ajoutez du code pour naviguer vers l'onglet Page 3 (l'onglet doit être identifié par son texte)
+    browser.driver.find_element_by_link_text("Page 3").click()
 
     # Attendez que la page soit complètement chargée (vous pouvez ajuster le délai si nécessaire)
     wait.until(lambda: len(browser.find_elements("div#top-10-features-importance-radar-chart")) > 0)
