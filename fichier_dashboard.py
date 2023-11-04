@@ -80,7 +80,7 @@ def update_prediction_and_table(n_clicks, sk_id_curr):
         return '', ''
 
     # Faites une requête GET à votre API FastAPI en utilisant l'URL appropriée
-    api_url = f"http://localhost:8000/predict/{sk_id_curr}"
+    api_url = f"https://lgbpdcapi-ce5a61ec45e8.herokuapp.com/predict/{sk_id_curr}"
     response = requests.get(api_url)
 
     if response.status_code == 200:
