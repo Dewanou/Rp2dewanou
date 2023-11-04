@@ -18,13 +18,9 @@ jobs:
       with:
         python-version: 3.8
 
-    - name: Install Dependencies
+    - name: Install Dependencies and Run Tests
       run: |
         pip install -r requirements.txt
         pip install pytest
-      working-directory: https://github.com/Dewanou/Rp2dewanou/blob/main/fichier_dashboard.py
-
-    - name: Run Tests
-      run: |
-        pytest
-      working-directory: https://github.com/Dewanou/Rp2dewanou/blob/main/fichier_dashboard.py
+        pytest test/
+      working-directory: .
