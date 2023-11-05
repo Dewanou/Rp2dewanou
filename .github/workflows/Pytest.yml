@@ -39,4 +39,4 @@ jobs:
       run: pytest  # Exécute les tests pytest
 
     - name: Run API test
-      run: python test_api.py  # Exécute le fichier test_api.py
+      run: python tests/test_api.py  # Exécute le fichier test_api.py
