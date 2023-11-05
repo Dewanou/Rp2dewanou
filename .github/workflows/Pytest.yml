@@ -19,7 +19,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: 3.8  # Vous pouvez également utiliser Python 3.6 si nécessaire
+        python-version: 3.8
 
     - name: Update pip
       run: |
@@ -36,4 +36,7 @@ jobs:
         python -m pip install selenium
 
     - name: Run tests
-      run: pytest
+      run: pytest  # Exécute les tests pytest
+
+    - name: Run API test
+      run: python test_api.py  # Exécute le fichier test_api.py
