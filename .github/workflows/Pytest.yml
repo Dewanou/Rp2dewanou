@@ -37,6 +37,3 @@ jobs:
 
     - name: Run tests
       run: pytest  # Exécute les tests pytest
-
-    - name: Run API test
-      run: python Rp2dewanou/tests/test_api.py   # Exécute le fichier test_api.py
